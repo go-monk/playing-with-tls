@@ -14,6 +14,8 @@ Physical            | Cables, radio, optical
 
 (This the TCP/IP networking model which is simpler the the OSI model. However, if you like pizza the OSI model is easy to remember: Please Do Not Throw The Sausage Pizza Away :-)
 
+## TCP
+
 TLS wraps application data before it goes over TCP. Let's have a look at how TCP works first. Let's build a simple TCP server:
 
 ```go
@@ -51,6 +53,10 @@ The data (`hello\n`) goes over the network in plaintext. If someone eavesdrops t
 
 <img width="594" height="65" alt="image" src="https://github.com/user-attachments/assets/b3e1daa4-fd69-49a8-ac85-399f10e50f51" />
 
----
+## TLS
 
- TLS is most often used to secure the HTTP protocol. HTTP on top of TLS becomes HTTPS.
+## HTTP
+
+TLS is most often used to secure the HTTP protocol. HTTP on top of TLS becomes HTTPS.
+
+## HTTPS
