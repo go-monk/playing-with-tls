@@ -115,8 +115,12 @@ $ echo hello | openssl s_client -connect localhost:4321 -servername localhost -q
 hello
 ```
 
+If we capture the data from the network now, we can't read it since it's encrypted:
+
+<img width="649" height="219" alt="image" src="https://github.com/user-attachments/assets/eb4da1a3-c077-4753-be32-8892fd595509" />
+
 ## HTTP
 
-TLS is most often used to secure the HTTP protocol. HTTP on top of TLS becomes HTTPS.
+TLS is often used to secure the HTTP protocol. HTTP on top of TLS becomes HTTPS. So let's start with HTTP.
 
 ## HTTPS
