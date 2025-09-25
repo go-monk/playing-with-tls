@@ -19,6 +19,7 @@ Physical            | Cables, radio, optical
 TLS wraps application data before it goes over TCP. Let's have a look at how TCP works first. Let's build a simple TCP server:
 
 ```go
+// ./tcp/server.go
 func main() {
         ln, err := net.Listen("tcp", "localhost:1234")
         if err != nil {
@@ -45,6 +46,7 @@ func echo(conn net.Conn) {
 The server echoes back anything a client sends to it:
 
 ```
+$ go run ./tcp/server.go &
 $ echo hello | nc localhost 1234
 hello
 ```
@@ -53,9 +55,12 @@ The data (`hello\n`) goes over the network in plaintext. If someone eavesdrops t
 
 <img width="594" height="65" alt="image" src="https://github.com/user-attachments/assets/b3e1daa4-fd69-49a8-ac85-399f10e50f51" />
 
+## TLS
+
 TLS is encrypting the application data so that they are not readable when someone reads them from the network. Now we use the `crypto/tls` standard library package instead of `net`. Also we need to supply the TLS certificate and private key:
 
 ```go
+// ./tls/server.go
 cert, err := tls.LoadX509KeyPair("localhost.pem", "localhost-key.pem")
 if err != nil {
         log.Fatal(err)
@@ -66,10 +71,10 @@ config := &tls.Config{
 }
 
 ln, err := tls.Listen("tcp", "localhost:4321", config)
-// The rest of the code is as above.
+// The rest of the code is as above...
 ```
 
-Also I added `log`ging so we can see what's going on with the connection:
+Also I added logging so we can see what's going on with the connection:
 
 ```go
 func echo(conn net.Conn) {
@@ -79,9 +84,16 @@ func echo(conn net.Conn) {
 }
 ```
 
+I created the certificate a key file for localhost using the [mkcert](https://github.com/FiloSottile/mkcert) tool:
+
+```
+$ mkcert localhost
+```
+
 When we send some data to the server now, we don't see anything echoed back:
 
 ```
+$ go run ./tls/server.go &
 $ echo hello | nc localhost 4321
 ```
 
@@ -96,7 +108,12 @@ Netcat (`nc`) can't speak TLS - the yellow steps; it can only speak TCP - the bl
 
 <img width="542" height="351" alt="image" src="https://github.com/user-attachments/assets/b567ea3b-0c35-4f40-bcb0-491af382f403" />
 
-## TLS
+But `openssl` can:
+
+```
+$ echo hello | openssl s_client -connect localhost:4321 -servername localhost -quiet 2> /dev/null 
+hello
+```
 
 ## HTTP
 
