@@ -92,8 +92,9 @@ $ go run main.go
 2025/09/25 18:00:06 sent 0 bytes to 127.0.0.1:52130, err: tls: first record does not look like a TLS handshake
 ```
 
-Netcat (`nc`) can't speak TLS - the yellow steps; it can only talk TCP - the blue steps (the standard three-way TCP handshake): 
+Netcat (`nc`) can't speak TLS - the yellow steps; it can only speak TCP - the blue steps (the standard three-way TCP handshake): 
 
+<img width="542" height="351" alt="image" src="https://github.com/user-attachments/assets/b567ea3b-0c35-4f40-bcb0-491af382f403" />
 
 ## TLS
 
