@@ -1,18 +1,18 @@
-I think it's still important to think even though we have the generative AI now. Thinking always have been and always will be good and useful. Think about it :-). Before you can think about something you have to learn and understand the basics. And one of the best ways how to learn something is by doing it or in other words playing with it.
+I think it's still important to think even though we have the generative AI now. Thinking always have been and always will be good and useful. Before we can start thinking about something more deeply we have to learn and understand the basics. And one of the best ways how to learn something is by doing it. Or in other words by playing with it.
 
-Take for example TLS. It used to be called SSL before and it's the protocol that secures the network communication. It sits between Application and Transport layers:
+Take TLS for example. It used to be called SSL before and it's the protocol that secures the network communication. It sits between Application and Transport layers:
 
 ```
-TCP/IP Layer        | Example / Role
-------------------- | -----------------------
-Application         | HTTP, SMTP, DNS, SSH
-Transport           | TCP / UDP
-Internet            | IP
-Link / Network      | Ethernet, WiFi
-Physical            | Cables, radio, optical
+TCP/IP Layer    | Protocol / Medium
+--------------- | ----------------------
+Application     | HTTP, SMTP, DNS, ...
+Transport       | TCP, UDP
+Internet        | IP
+Link / Network  | Ethernet, WiFi
+Physical        | Cables, radio, optical
 ```
 
-(This the TCP/IP networking model which is simpler the the OSI model. However, if you like pizza the OSI model is easy to remember: Please Do Not Throw The Sausage Pizza Away :-)
+(This is the TCP/IP networking model which is simpler than the OSI model. However, if you like pizza the OSI model is easy to remember: Please Do Not Throw The Sausage Pizza Away :-)
 
 ## TCP
 
@@ -51,7 +51,7 @@ $ echo hello | nc localhost 1234
 hello
 ```
 
-The data (`hello\n`) goes over the network in plaintext. If someone eavesdrops the connection, for example using Wireshark, he sees the data:
+The data (`hello\n`) goes over the network in plaintext. If someone eavesdrops on the network, for example using Wireshark, they see the transfered data:
 
 <img width="594" height="65" alt="image" src="https://github.com/user-attachments/assets/b3e1daa4-fd69-49a8-ac85-399f10e50f51" />
 
@@ -74,7 +74,7 @@ ln, err := tls.Listen("tcp", "localhost:4321", config)
 // The rest of the code is as above...
 ```
 
-Also I added logging so we can see what's going on with the connection:
+I added logging to the `echo` function so we can see what's going on with the connection:
 
 ```go
 func echo(conn net.Conn) {
@@ -84,7 +84,7 @@ func echo(conn net.Conn) {
 }
 ```
 
-I created the certificate a key file for localhost using the [mkcert](https://github.com/FiloSottile/mkcert) tool:
+I created the certificate and the key file for localhost using the [mkcert](https://github.com/FiloSottile/mkcert) tool:
 
 ```
 $ mkcert localhost
