@@ -1,6 +1,6 @@
-I think it's still important to think even though we have the generative AI now. Thinking always has been and always will be good and useful. Before we can start thinking about something more deeply we have to learn and understand the basics. And one of the best ways how to learn anything is by doing it. Playing is a way of doing. You should probably not play in production though.
+I think it's still important to think even though we have the generative AI now. Thinking always has been and always will be good and useful. Before we can start thinking more deeply about something we have to learn the basics. And one of the best ways how to learn anything is by doing it. Playing is a way of doing. You should probably not play in production though.
 
-Take TLS for example. It used to be called SSL before and it's the protocol that secures the network communication. It sits between Application and Transport layers:
+Take TLS for example. It used to be called SSL before and it's the protocol that secures the network communication. It sits between Application and Transport layers in a networking model:
 
 ```
 TCP/IP Layer    | Protocol / Medium
@@ -12,7 +12,9 @@ Link / Network  | Ethernet, WiFi
 Physical        | Cables, radio, optical
 ```
 
-(This is the TCP/IP networking model which is simpler than the OSI model. However, if you like pizza and sausages, the OSI model is easy to remember: Please Do Not Throw The Sausage Pizza Away :-)
+(This is the TCP/IP networking model which is simpler than the OSI model. However, the OSI model layers are not that hard to remember, just Please Do Not Throw The Sausage Pizza Away :-)
+
+Now, let's play with it a bit instead of just reading the theory.
 
 ## TCP
 
@@ -47,8 +49,9 @@ The server echoes back anything a client sends to it:
 
 ```
 $ go run ./tcp/server.go &
-$ echo hello | nc localhost 1234
-hello
+$ nc localhost 1234 # connect to the server
+hello				# sent data
+hello				# received data
 ```
 
 The data (`hello\n`) goes over the network in plaintext. If someone eavesdrops on the network, for example using Wireshark, they see the transferred data:
@@ -57,7 +60,11 @@ The data (`hello\n`) goes over the network in plaintext. If someone eavesdrops o
 
 ## TLS
 
-TLS is encrypting the application data so that they are not readable when someone gets them from the network. Now we use the [crypto/tls](https://pkg.go.dev/crypto/tls) standard library package instead of [net](https://pkg.go.dev/net). Also we need to supply the TLS certificate and private key:
+TLS encrypts (and provides identity and integrity of) the application data so that it's not readable when someone gets it from the network. We'll use the [crypto/tls](https://pkg.go.dev/crypto/tls) standard library package instead of the [net](https://pkg.go.dev/net) we used above. TLS is based on asymmetric encryption that uses different key for encryption and decryption:
+
+<img width="433" alt="image" src="https://user-images.githubusercontent.com/1047259/179235563-06b3e4ec-fb34-4967-8487-a71639cd10ce.png">
+
+In our case Bob is the server running on localhost and Alice is the client (like `nc` or `openssl`) talking to the server. Eve is the guy on snooping on the network with Wireshark. So we'll need to supply a TLS certificate - basically the public key (`localhost.pem`) and private key (`localhost-key.pem`) as configuration to our server:
 
 ```go
 // ./tls/server.go
@@ -85,7 +92,7 @@ func echo(conn net.Conn) {
 }
 ```
 
-I used the [mkcert](https://github.com/FiloSottile/mkcert) tool to create certificate and key file for localhost:
+I use the [mkcert](https://github.com/FiloSottile/mkcert) tool to create the certificate and the private key files for localhost:
 
 ```
 $ mkcert localhost
@@ -95,28 +102,29 @@ But when we send some data to the server now, we don't see anything echoed back:
 
 ```
 $ go run ./tls/server.go &
-$ echo hello | nc localhost 4321
+$ nc localhost 4321 # connect to the server
+hello				# sent data
 ```
 
 Let's have a look at the server logs:
 
 ```
-$ go run main.go 
 2025/09/25 18:00:06 sent 0 bytes to 127.0.0.1:52130, err: tls: first record does not look like a TLS handshake
 ```
 
-Yes, netcat (`nc`) can't speak TLS: the yellow steps. It can only speak TCP: the blue steps (the standard three-way TCP handshake): 
+Yes, netcat (`nc`) can't speak TLS - the yellow steps below (the TLS handshake). It can only speak TCP - the blue steps (the standard three-way TCP handshake): 
 
 <img width="542" height="351" alt="image" src="https://github.com/user-attachments/assets/b567ea3b-0c35-4f40-bcb0-491af382f403" />
 
 But `openssl` can:
 
 ```
-$ echo hello | openssl s_client -connect localhost:4321 -servername localhost -quiet 2> /dev/null 
+$ openssl s_client -connect localhost:4321 -servername localhost -quiet 2> /dev/null
+hello
 hello
 ```
 
-If we capture the data from the network now, we can't read it since it's encrypted:
+If Eve captures the data from the network now, they can't read it since it's encrypted:
 
 <img width="649" height="219" alt="image" src="https://github.com/user-attachments/assets/eb4da1a3-c077-4753-be32-8892fd595509" />
 
@@ -155,7 +163,7 @@ $ curl localhost:8080 --data hello
 hello
 ```
 
-We see it gets echoed back. In plaintext, unencrypted.
+We see it gets echoed back. In plaintext, unencrypted. This makes Eve very happy.
 
 ## HTTPS
 
@@ -177,3 +185,5 @@ hello
 $ curl https://localhost:4430 --data hello --cacert localhost.pem 
 hello
 ```
+
+Eve gets somehow sad now ...
