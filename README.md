@@ -174,13 +174,13 @@ log.Fatal(http.ListenAndServeTLS("localhost:4430",
         "localhost.pem", "localhost-key.pem", nil))
 ```
 
-On the client side, we need to specify `https://` in the URL (`curl` defaults to `http://`) and port `4430` instead of `8080`. Also we either skip the server certificate verification by using `--insecure` (or `-k`) or we supply the server certificate file via `--cacert`.
+On the client side, we need to specify `https://` in the URL (`curl` defaults to `http://`) and port `4430` instead of `8080`. Also, since our certificate is not signed by a trusted certificate authority (CA) that is pre-installed in browser/OS we either skip the server certificate verification or we supply the server certificate file:
 
 ```
 $ go run https/server.go &
-$ curl https://localhost:4430 --data hello --insecure
+$ curl https://localhost:4430 --data hello --insecure 			  # skip the server certificate verification
 hello
-$ curl https://localhost:4430 --data hello --cacert localhost.pem 
+$ curl https://localhost:4430 --data hello --cacert localhost.pem # supply the server certificate file
 hello
 ```
 
