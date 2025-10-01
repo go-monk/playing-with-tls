@@ -178,9 +178,13 @@ On the client side, we need to specify `https://` in the URL (`curl` defaults to
 
 ```
 $ go run https/server.go &
-$ curl https://localhost:4430 --data hello --insecure 			  # skip the server certificate verification
+
+# skip the server certificate verification
+$ curl https://localhost:4430 --data hello --insecure
 hello
-$ curl https://localhost:4430 --data hello --cacert localhost.pem # supply the server certificate file
+
+# supply the server certificate file
+$ curl https://localhost:4430 --data hello --cacert localhost.pem
 hello
 ```
 
