@@ -124,9 +124,7 @@ hello
 hello
 ```
 
-If Eve captures the data from the network now, they can't read it since it's encrypted:
-
-<img width="649" height="219" alt="image" src="https://github.com/user-attachments/assets/eb4da1a3-c077-4753-be32-8892fd595509" />
+If Eve captures the data from the network now, they can't read it since it's encrypted.
 
 ## HTTP
 
